@@ -1,6 +1,6 @@
 # parcomb
 
-Parser combinator playground based on bodil.lol/parser-combinators/
+Parser combinator playground based on [bodil.lol/parser-combinators/](https://bodil.lol/parser-combinators/)
 
 
 ## Quick start
