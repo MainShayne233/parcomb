@@ -13,14 +13,14 @@ pub fn chop_head(input: Parsable) -> Maybe(tuple(Parsable, Parsable)) {
   }
 }
 
+pub fn to_string(value: Parsable) -> String {
+  value.string
+}
+
 pub fn length(input: Parsable) -> Int {
   input
   |> to_string()
   |> string.length
-}
-
-pub fn to_string(value: Parsable) -> String {
-  value.string
 }
 
 pub fn split_at(input: Parsable, index: Int) -> tuple(Parsable, Parsable) {
