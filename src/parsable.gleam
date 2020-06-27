@@ -34,3 +34,18 @@ pub fn split_at(input: Parsable, index: Int) -> tuple(Parsable, Parsable) {
 
   tuple(Parsable(string.concat(lhs)), Parsable(string.concat(rhs)))
 }
+
+pub fn split_while(
+  input: Parsable,
+  fun: fn(String) -> Bool,
+) -> tuple(Parsable, Parsable) {
+  let tuple(
+    lhs,
+    rhs,
+  ) = input
+    |> to_string()
+    |> to_graphemes()
+    |> list.split_while(fun)
+
+  tuple(Parsable(string.concat(lhs)), Parsable(string.concat(rhs)))
+}

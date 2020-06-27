@@ -25,3 +25,14 @@ pub fn match_literal_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("Goodbye, world!")))
 }
+
+pub fn identifier_test() {
+  let ok_input = Parsable("cool-beans, hi")
+  let error_input = Parsable("!Nope")
+
+  parcomb.identifier(ok_input)
+  |> should.equal(Ok(tuple(Parsable(", hi"), Parsable("cool-beans"))))
+
+  parcomb.identifier(error_input)
+  |> should.equal(Error(Parsable("!Nope")))
+}

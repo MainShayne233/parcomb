@@ -1,5 +1,6 @@
 import maybe.{Just, Nothing}
 import parsable.{Parsable}
+import util.{is_alphanumeric}
 
 pub type ParseResult =
   Result(tuple(Parsable, Parsable), Parsable)
@@ -29,5 +30,16 @@ pub fn match_literal(expected: Parsable) -> Parser {
       tuple(actual, rest) if actual == expected -> Ok(tuple(rest, actual))
       _ -> Error(input)
     }
+  }
+}
+
+pub fn identifier(input: Parsable) -> ParseResult {
+  let is_ident_char = fn(char: String) -> Bool {
+    is_alphanumeric(char) || char == "-"
+  }
+
+  case parsable.split_while(input, is_ident_char) {
+    tuple(match, rest) if match != Parsable("") -> Ok(tuple(rest, match))
+    _ -> Error(input)
   }
 }
