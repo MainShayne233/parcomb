@@ -67,3 +67,19 @@ pub fn map_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("!nope")))
 }
+
+pub fn left_test() {
+  let ok_input = Parsable("<ident rest")
+  let error_input = Parsable("!nope")
+
+  let parser = parcomb.left(
+    parcomb.match_literal(Parsable("<")),
+    parcomb.identifier,
+  )
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable(" rest"), Parsable("<"))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("!nope")))
+}

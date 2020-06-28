@@ -75,3 +75,13 @@ pub fn map(parser: Parser(a), fun: fn(a) -> b) -> Parser(b) {
     }
   }
 }
+
+pub fn left(lhs: Parser(a), rhs: Parser(b)) -> Parser(a) {
+  pair(lhs, rhs)
+  |> map(
+    fn(result: tuple(a, b)) {
+      let tuple(lhs_match, _) = result
+      lhs_match
+    },
+  )
+}
