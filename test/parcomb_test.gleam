@@ -161,5 +161,4 @@ pub fn pred_test() {
 
   parser(error_input)
   |> should.equal(Error(Parsable("lol")))
-  2
 }
