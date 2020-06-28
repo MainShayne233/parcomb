@@ -79,3 +79,21 @@ pub fn right(lhs: Parser(a), rhs: Parser(b)) -> Parser(b) {
     },
   )
 }
+
+fn do_zero_to_many(
+  parser: Parser(a),
+  input: Parsable,
+  matches: List(a),
+) -> tuple(Parsable, List(a)) {
+  case parser(input) {
+    Ok(tuple(rest, match)) -> do_zero_to_many(parser, rest, [match, ..matches])
+    _ -> tuple(input, matches)
+  }
+}
+
+pub fn one_or_more(parser: Parser(a)) -> Parser(List(a)) {
+  fn(input: Parsable) {
+    try tuple(rest, match) = parser(input)
+    Ok(do_zero_to_many(parser, rest, [match]))
+  }
+}
