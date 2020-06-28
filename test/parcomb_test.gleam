@@ -146,3 +146,20 @@ pub fn any_char_test() {
   parcomb.any_char(error_input)
   |> should.equal(Error(Parsable("")))
 }
+
+pub fn pred_test() {
+  let ok_input = Parsable("omg")
+  let error_input = Parsable("lol")
+
+  let parser = parcomb.pred(
+    parcomb.any_char,
+    fn(result) { result == Parsable("o") },
+  )
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable("mg"), Parsable("o"))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("lol")))
+  2
+}

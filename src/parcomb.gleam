@@ -108,3 +108,13 @@ pub fn any_char(input: Parsable) -> ParseResult(Parsable) {
     _ -> Error(input)
   }
 }
+
+pub fn pred(parser: Parser(a), predicate: fn(a) -> Bool) -> Parser(a) {
+  fn(input: Parsable) {
+    try tuple(rest, match) = parser(input)
+    case predicate(match) {
+      True -> Ok(tuple(rest, match))
+      False -> Error(input)
+    }
+  }
+}
