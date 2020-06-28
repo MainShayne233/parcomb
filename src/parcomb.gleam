@@ -55,10 +55,8 @@ pub fn pair(lhs: Parser(a), rhs: Parser(b)) -> Parser(tuple(a, b)) {
 
 pub fn map(parser: Parser(a), fun: fn(a) -> b) -> Parser(b) {
   fn(input: Parsable) {
-    case parser(input) {
-      Ok(tuple(rest, match)) -> Ok(tuple(rest, fun(match)))
-      Error(err) -> Error(err)
-    }
+    try tuple(rest, match) = parser(input)
+    Ok(tuple(rest, fun(match)))
   }
 }
 
