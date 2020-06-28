@@ -119,3 +119,19 @@ pub fn one_or_more_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("!nope")))
 }
+
+pub fn zero_or_more_test() {
+  let zero_input = Parsable(" rest")
+  let more_input = Parsable("<<< rest")
+
+  let parser = parcomb.match_literal(Parsable("<"))
+    |> parcomb.zero_or_more()
+
+  parser(zero_input)
+  |> should.equal(Ok(tuple(Parsable(" rest"), [])))
+
+  parser(more_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" rest"), [Parsable("<"), Parsable("<"), Parsable("<")])),
+  )
+}

@@ -97,3 +97,7 @@ pub fn one_or_more(parser: Parser(a)) -> Parser(List(a)) {
     Ok(do_zero_to_many(parser, rest, [match]))
   }
 }
+
+pub fn zero_or_more(parser: Parser(a)) -> Parser(List(a)) {
+  fn(input: Parsable) { Ok(do_zero_to_many(parser, input, [])) }
+}
