@@ -1,3 +1,4 @@
+import gleam/result
 import maybe.{Just, Nothing}
 import parsable.{Parsable}
 import util.{is_alphanumeric}
@@ -46,15 +47,23 @@ pub fn identifier(input: Parsable) -> ParseResult(Parsable) {
 
 pub fn pair(lhs: Parser(a), rhs: Parser(b)) -> Parser(tuple(a, b)) {
   fn(input: Parsable) {
-    case lhs(input) {
-      Ok(tuple(lhs_rest, lhs_match)) -> case rhs(lhs_rest) {
-        Ok(
-          tuple(rhs_rest, rhs_match),
-        ) -> Ok(tuple(rhs_rest, tuple(lhs_match, rhs_match)))
-        Error(err) -> Error(err)
-      }
-      Error(err) -> Error(err)
-    }
+    input
+    |> lhs()
+    |> result.then(
+      fn(lhs_result) {
+        let tuple(lhs_rest, lhs_match) = lhs_result
+
+        lhs_rest
+        |> rhs()
+        |> result.map(
+          fn(rhs_result) {
+            let tuple(rhs_rest, rhs_match) = rhs_result
+
+            tuple(rhs_rest, tuple(lhs_match, rhs_match))
+          },
+        )
+      },
+    )
   }
 }
 
