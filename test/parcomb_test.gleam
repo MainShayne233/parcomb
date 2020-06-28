@@ -54,3 +54,16 @@ pub fn pair_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("tag")))
 }
+
+pub fn map_test() {
+  let ok_input = Parsable("ident rest")
+  let error_input = Parsable("!nope")
+
+  let parser = parcomb.map(parcomb.identifier, parsable.to_string)
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable(" rest"), "ident")))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("!nope")))
+}

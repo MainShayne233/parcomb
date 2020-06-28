@@ -6,7 +6,7 @@ pub type Parsable {
   Parsable(string: String)
 }
 
-fn to_string(value: Parsable) -> String {
+pub fn to_string(value: Parsable) -> String {
   value.string
 }
 
