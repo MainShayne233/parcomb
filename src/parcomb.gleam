@@ -17,6 +17,16 @@ pub type Element {
   )
 }
 
+fn tuple_lhs(value: tuple(a, b)) -> a {
+  let tuple(lhs_val, _) = value
+  lhs_val
+}
+
+fn tuple_rhs(value: tuple(a, b)) -> b {
+  let tuple(_, rhs_val) = value
+  rhs_val
+}
+
 pub fn the_letter_a(input: Parsable) -> ParseResult(Parsable) {
   case parsable.chop_head(input) {
     Just(tuple(head, rest)) if head == Parsable("a") -> Ok(tuple(rest, head))
@@ -62,22 +72,12 @@ pub fn map(parser: Parser(a), fun: fn(a) -> b) -> Parser(b) {
 
 pub fn left(lhs: Parser(a), rhs: Parser(b)) -> Parser(a) {
   pair(lhs, rhs)
-  |> map(
-    fn(result: tuple(a, b)) {
-      let tuple(lhs_match, _) = result
-      lhs_match
-    },
-  )
+  |> map(tuple_lhs)
 }
 
 pub fn right(lhs: Parser(a), rhs: Parser(b)) -> Parser(b) {
   pair(lhs, rhs)
-  |> map(
-    fn(result: tuple(a, b)) {
-      let tuple(_, rhs_match) = result
-      rhs_match
-    },
-  )
+  |> map(tuple_rhs)
 }
 
 fn do_zero_to_many(
