@@ -135,3 +135,14 @@ pub fn zero_or_more_test() {
     Ok(tuple(Parsable(" rest"), [Parsable("<"), Parsable("<"), Parsable("<")])),
   )
 }
+
+pub fn any_char_test() {
+  let ok_input = Parsable("! rest")
+  let error_input = Parsable("")
+
+  parcomb.any_char(ok_input)
+  |> should.equal(Ok(tuple(Parsable(" rest"), Parsable("!"))))
+
+  parcomb.any_char(error_input)
+  |> should.equal(Error(Parsable("")))
+}

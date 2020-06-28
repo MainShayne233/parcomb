@@ -101,3 +101,10 @@ pub fn one_or_more(parser: Parser(a)) -> Parser(List(a)) {
 pub fn zero_or_more(parser: Parser(a)) -> Parser(List(a)) {
   fn(input: Parsable) { Ok(do_zero_to_many(parser, input, [])) }
 }
+
+pub fn any_char(input: Parsable) -> ParseResult(Parsable) {
+  case parsable.chop_head(input) {
+    Just(tuple(head, rest)) if head != Parsable("") -> Ok(tuple(rest, head))
+    _ -> Error(input)
+  }
+}
