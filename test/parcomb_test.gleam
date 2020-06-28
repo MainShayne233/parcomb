@@ -36,3 +36,21 @@ pub fn identifier_test() {
   parcomb.identifier(error_input)
   |> should.equal(Error(Parsable("!Nope")))
 }
+
+pub fn pair_test() {
+  let ok_input = Parsable("<tag stuff")
+  let error_input = Parsable("tag")
+
+  let parser = parcomb.pair(
+    parcomb.match_literal(Parsable("<")),
+    parcomb.identifier,
+  )
+
+  parser(ok_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" stuff"), tuple(Parsable("<"), Parsable("tag")))),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("tag")))
+}
