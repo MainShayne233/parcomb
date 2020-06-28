@@ -69,3 +69,13 @@ pub fn left(lhs: Parser(a), rhs: Parser(b)) -> Parser(a) {
     },
   )
 }
+
+pub fn right(lhs: Parser(a), rhs: Parser(b)) -> Parser(b) {
+  pair(lhs, rhs)
+  |> map(
+    fn(result: tuple(a, b)) {
+      let tuple(_, rhs_match) = result
+      rhs_match
+    },
+  )
+}
