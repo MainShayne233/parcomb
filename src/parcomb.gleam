@@ -51,9 +51,9 @@ pub fn pair(lhs: Parser(a), rhs: Parser(b)) -> Parser(tuple(a, b)) {
         Ok(
           tuple(rhs_rest, rhs_match),
         ) -> Ok(tuple(rhs_rest, tuple(lhs_match, rhs_match)))
-        error -> error
+        Error(err) -> Error(err)
       }
-      error -> error
+      Error(err) -> Error(err)
     }
   }
 }
