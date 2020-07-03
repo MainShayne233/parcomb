@@ -183,3 +183,41 @@ pub fn whitespace_char_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("hi")))
 }
+
+pub fn space1_test() {
+  let ok_one_input = Parsable(" hi")
+  let ok_many_input = Parsable("   hi")
+  let error_input = Parsable("hi")
+
+  let parser = parcomb.space1()
+
+  parser(ok_one_input)
+  |> should.equal(Ok(tuple(Parsable("hi"), [Parsable(" ")])))
+
+  parser(ok_many_input)
+  |> should.equal(
+    Ok(tuple(Parsable("hi"), [Parsable(" "), Parsable(" "), Parsable(" ")])),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("hi")))
+}
+
+pub fn space0_test() {
+  let ok_zero_input = Parsable("hi")
+  let ok_one_input = Parsable(" hi")
+  let ok_many_input = Parsable("   hi")
+
+  let parser = parcomb.space0()
+
+  parser(ok_zero_input)
+  |> should.equal(Ok(tuple(Parsable("hi"), [])))
+
+  parser(ok_one_input)
+  |> should.equal(Ok(tuple(Parsable("hi"), [Parsable(" ")])))
+
+  parser(ok_many_input)
+  |> should.equal(
+    Ok(tuple(Parsable("hi"), [Parsable(" "), Parsable(" "), Parsable(" ")])),
+  )
+}

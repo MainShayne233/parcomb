@@ -138,3 +138,11 @@ pub fn whitespace_char() -> Parser(Parsable) {
     },
   )
 }
+
+pub fn space1() -> Parser(List(Parsable)) {
+  one_or_more(whitespace_char())
+}
+
+pub fn space0() -> Parser(List(Parsable)) {
+  zero_or_more(whitespace_char())
+}
