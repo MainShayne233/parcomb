@@ -221,3 +221,16 @@ pub fn space0_test() {
     Ok(tuple(Parsable("hi"), [Parsable(" "), Parsable(" "), Parsable(" ")])),
   )
 }
+
+pub fn quoted_string_test() {
+  let ok_input = Parsable("\"hello!\" more")
+  let error_input = Parsable("\"hello!")
+
+  let parser = parcomb.quoted_string()
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Parsable("hello!"))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("")))
+}

@@ -146,3 +146,18 @@ pub fn space1() -> Parser(List(Parsable)) {
 pub fn space0() -> Parser(List(Parsable)) {
   zero_or_more(whitespace_char())
 }
+
+pub fn quoted_string() -> Parser(Parsable) {
+  map(
+    right(
+      match_literal(Parsable("\"")),
+      left(
+        zero_or_more(
+          pred(any_char, fn(c: Parsable) { parsable.to_string(c) != "\"" }),
+        ),
+        match_literal(Parsable("\"")),
+      ),
+    ),
+    parsable.flatten,
+  )
+}

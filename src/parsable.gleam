@@ -53,3 +53,7 @@ pub fn split_while(
 
   tuple(Parsable(string.concat(lhs)), Parsable(string.concat(rhs)))
 }
+
+pub fn flatten(parsables: List(Parsable)) -> Parsable {
+  list.fold(parsables, Parsable(""), concat)
+}
