@@ -170,3 +170,16 @@ pub fn pred_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("lol")))
 }
+
+pub fn whitespace_char_test() {
+  let ok_input = Parsable(" hi")
+  let error_input = Parsable("hi")
+
+  let parser = parcomb.whitespace_char()
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable("hi"), Parsable(" "))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("hi")))
+}

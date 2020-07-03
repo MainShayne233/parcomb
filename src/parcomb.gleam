@@ -1,7 +1,7 @@
 import gleam/result
 import maybe.{Just, Nothing}
 import parsable.{Parsable}
-import util.{is_alphabetic, is_alphanumeric}
+import util.{is_alphabetic, is_alphanumeric, is_whitespace}
 
 pub type ParseResult(t) =
   Result(tuple(Parsable, t), Parsable)
@@ -126,4 +126,15 @@ pub fn pred(parser: Parser(a), predicate: fn(a) -> Bool) -> Parser(a) {
       False -> Error(input)
     }
   }
+}
+
+pub fn whitespace_char() -> Parser(Parsable) {
+  pred(
+    any_char,
+    fn(char: Parsable) {
+      char
+      |> parsable.to_string()
+      |> is_whitespace()
+    },
+  )
 }

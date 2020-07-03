@@ -13,3 +13,7 @@ pub fn is_alphanumeric(char: String) -> Bool {
     lowered,
   ) || lowered == "0" || lowered == "1" || lowered == "2" || lowered == "3" || lowered == "4" || lowered == "5" || lowered == "6" || lowered == "7" || lowered == "8" || lowered == "9"
 }
+
+pub fn is_whitespace(char: String) -> Bool {
+  char == " " || char == "\n" || char == "\t"
+}
