@@ -28,13 +28,21 @@ pub fn match_literal_test() {
 
 pub fn identifier_test() {
   let ok_input = Parsable("cool-beans, hi")
+  let ok_numbers_input = Parsable("cool5beans, hi")
   let error_input = Parsable("!Nope")
+  let error_numbers_input = Parsable("5beans")
 
   parcomb.identifier(ok_input)
   |> should.equal(Ok(tuple(Parsable(", hi"), Parsable("cool-beans"))))
 
+  parcomb.identifier(ok_numbers_input)
+  |> should.equal(Ok(tuple(Parsable(", hi"), Parsable("cool5beans"))))
+
   parcomb.identifier(error_input)
   |> should.equal(Error(Parsable("!Nope")))
+
+  parcomb.identifier(error_numbers_input)
+  |> should.equal(Error(Parsable("5beans")))
 }
 
 pub fn pair_test() {

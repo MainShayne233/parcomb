@@ -1,4 +1,4 @@
-import gleam/string.{length, pop_grapheme, to_graphemes}
+import gleam/string.{append, length, pop_grapheme, to_graphemes}
 import gleam/list
 import maybe.{Just, Maybe, Nothing}
 
@@ -8,6 +8,10 @@ pub type Parsable {
 
 pub fn to_string(value: Parsable) -> String {
   value.string
+}
+
+pub fn concat(lhs: Parsable, rhs: Parsable) -> Parsable {
+  Parsable(append(to_string(lhs), to_string(rhs)))
 }
 
 pub fn chop_head(input: Parsable) -> Maybe(tuple(Parsable, Parsable)) {

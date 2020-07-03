@@ -1,7 +1,7 @@
 import gleam/result
 import maybe.{Just, Nothing}
 import parsable.{Parsable}
-import util.{is_alphanumeric}
+import util.{is_alphabetic, is_alphanumeric}
 
 pub type ParseResult(t) =
   Result(tuple(Parsable, t), Parsable)
@@ -44,15 +44,24 @@ pub fn match_literal(expected: Parsable) -> Parser(Parsable) {
   }
 }
 
+pub fn letter(input: Parsable) -> ParseResult(Parsable) {
+  case parsable.chop_head(input) {
+    Just(tuple(head, rest)) -> case is_alphabetic(parsable.to_string(head)) {
+      True -> Ok(tuple(rest, head))
+      False -> Error(input)
+    }
+    Nothing -> Error(input)
+  }
+}
+
 pub fn identifier(input: Parsable) -> ParseResult(Parsable) {
   let is_ident_char = fn(char: String) -> Bool {
     is_alphanumeric(char) || char == "-"
   }
 
-  case parsable.split_while(input, is_ident_char) {
-    tuple(match, rest) if match != Parsable("") -> Ok(tuple(rest, match))
-    _ -> Error(input)
-  }
+  try tuple(rest, head) = letter(input)
+  let tuple(tail, rest) = parsable.split_while(rest, is_ident_char)
+  Ok(tuple(rest, parsable.concat(head, tail)))
 }
 
 pub fn pair(lhs: Parser(a), rhs: Parser(b)) -> Parser(tuple(a, b)) {
