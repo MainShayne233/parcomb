@@ -389,3 +389,118 @@ pub fn open_element_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("nope")))
 }
+
+pub fn either_test() {
+  let ok_first_input = Parsable("<elem/> more")
+  let ok_second_input = Parsable("<elem> more")
+  let error_input = Parsable("!nope")
+
+  let parser = parcomb.either(parcomb.single_element(), parcomb.open_element())
+
+  parser(ok_first_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Element("elem", [], []))))
+
+  parser(ok_second_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Element("elem", [], []))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("!nope")))
+}
+
+pub fn close_element_test() {
+  let ok_input = Parsable("</elem> more")
+  let error_input = Parsable("</nope>")
+
+  let parser = parcomb.close_element(Parsable("elem"))
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Parsable("elem"))))
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("</nope>")))
+}
+
+pub fn and_then_test() {
+  let ok_input = Parsable("<elem></elem> more")
+  let error_input = Parsable("<elem></nope>")
+  let parser = parcomb.and_then(
+    parcomb.open_element(),
+    fn(open_elem: Element) {
+      parcomb.map(
+        parcomb.close_element(Parsable(open_elem.name)),
+        fn(close_elem) { tuple(open_elem, close_elem) },
+      )
+    },
+  )
+
+  parser(ok_input)
+  |> should.equal(
+    Ok(
+      tuple(Parsable(" more"), tuple(Element("elem", [], []), Parsable("elem"))),
+    ),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("</nope>")))
+}
+
+pub fn parent_element_test() {
+  let ok_no_children_input = Parsable("<elem></elem> more")
+  let ok_one_child_input = Parsable("<elem><hello/></elem> more")
+  let ok_many_children_input = Parsable(
+    "<elem><hello/><world/><yay/></elem> more",
+  )
+  let error_input = Parsable("<nope>")
+
+  let parser = parcomb.parent_element()
+
+  parser(ok_no_children_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Element("elem", [], []))))
+
+  parser(ok_one_child_input)
+  |> should.equal(
+    Ok(
+      tuple(Parsable(" more"), Element("elem", [], [Element("hello", [], [])])),
+    ),
+  )
+
+  parser(ok_many_children_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        Element(
+          "elem",
+          [],
+          [
+            Element("hello", [], []),
+            Element("world", [], []),
+            Element("yay", [], []),
+          ],
+        ),
+      ),
+    ),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("")))
+}
+
+pub fn element_test() {
+  let ok_input = Parsable(
+    "
+    <top label=\"Top\">
+      <semi-bottom label=\"Bottom\"/>
+      <middle>
+          <bottom label=\"Another bottom\"/>
+      </middle>
+    </top>
+  ",
+  )
+  let error_input = "!nope"
+
+  let parser = parcomb.element()
+
+  parser(ok_input)
+  |> should.equal(Ok(tuple(Parsable(""), Element("", [], []))))
+}

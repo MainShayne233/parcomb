@@ -210,3 +210,49 @@ pub fn open_element() -> Parser(Element) {
     },
   )
 }
+
+pub fn either(parser1: Parser(t), parser2: Parser(t)) -> Parser(t) {
+  fn(input: Parsable) {
+    case parser1(input) {
+      Ok(result) -> Ok(result)
+      Error(_) -> parser2(input)
+    }
+  }
+}
+
+fn whitespace_wrap(parser: Parser(a)) -> Parser(a) {
+  right(space0(), left(parser, space0()))
+}
+
+pub fn element() -> Parser(Element) {
+  whitespace_wrap(either(single_element(), parent_element()))
+}
+
+pub fn close_element(expected_name: Parsable) -> Parser(Parsable) {
+  pred(
+    right(
+      match_literal(Parsable("</")),
+      left(identifier, match_literal(Parsable(">"))),
+    ),
+    fn(name) { name == expected_name },
+  )
+}
+
+pub fn and_then(parser: Parser(a), fun: fn(a) -> Parser(b)) -> Parser(b) {
+  fn(input: Parsable) {
+    try tuple(next_input, result) = parser(input)
+    fun(result)(next_input)
+  }
+}
+
+pub fn parent_element() -> Parser(Element) {
+  and_then(
+    open_element(),
+    fn(open_elem: Element) {
+      map(
+        left(zero_or_more(element()), close_element(Parsable(open_elem.name))),
+        fn(children) { Element(open_elem.name, open_elem.attributes, children) },
+      )
+    },
+  )
+}
