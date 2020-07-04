@@ -234,3 +234,18 @@ pub fn quoted_string_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("")))
 }
+
+pub fn attribute_pair_test() {
+  let ok_input = Parsable("key=\"value\" more")
+  let error_input = Parsable("key=")
+
+  let parser = parcomb.attribute_pair()
+
+  parser(ok_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" more"), tuple(Parsable("key"), Parsable("value")))),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("")))
+}

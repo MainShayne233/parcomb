@@ -161,3 +161,7 @@ pub fn quoted_string() -> Parser(Parsable) {
     parsable.flatten,
   )
 }
+
+pub fn attribute_pair() -> Parser(tuple(Parsable, Parsable)) {
+  pair(identifier, right(match_literal(Parsable("=")), quoted_string()))
+}
