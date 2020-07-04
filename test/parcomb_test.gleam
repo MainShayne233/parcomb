@@ -1,4 +1,4 @@
-import parcomb
+import parcomb.{Attribute, Element}
 import gleam/should
 import parsable.{Parsable}
 
@@ -313,6 +313,74 @@ pub fn element_start_test() {
             tuple(Parsable("c"), Parsable("d")),
             tuple(Parsable("e"), Parsable("f")),
           ],
+        ),
+      ),
+    ),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("nope")))
+}
+
+pub fn single_element_test() {
+  let ok_no_attrs_input = Parsable("<elem/> more")
+  let ok_one_attr_input = Parsable("<elem a=\"b\"/> more")
+  let ok_many_attrs_input = Parsable("<elem a=\"b\" c=\"d\" e=\"f\"/> more")
+  let error_input = Parsable("nope")
+
+  let parser = parcomb.single_element()
+
+  parser(ok_no_attrs_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Element("elem", [], []))))
+
+  parser(ok_one_attr_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" more"), Element("elem", [Attribute("a", "b")], []))),
+  )
+
+  parser(ok_many_attrs_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        Element(
+          "elem",
+          [Attribute("a", "b"), Attribute("c", "d"), Attribute("e", "f")],
+          [],
+        ),
+      ),
+    ),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("nope")))
+}
+
+pub fn open_element_test() {
+  let ok_no_attrs_input = Parsable("<elem> more")
+  let ok_one_attr_input = Parsable("<elem a=\"b\"> more")
+  let ok_many_attrs_input = Parsable("<elem a=\"b\" c=\"d\" e=\"f\"> more")
+  let error_input = Parsable("nope")
+
+  let parser = parcomb.open_element()
+
+  parser(ok_no_attrs_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), Element("elem", [], []))))
+
+  parser(ok_one_attr_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" more"), Element("elem", [Attribute("a", "b")], []))),
+  )
+
+  parser(ok_many_attrs_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        Element(
+          "elem",
+          [Attribute("a", "b"), Attribute("c", "d"), Attribute("e", "f")],
+          [],
         ),
       ),
     ),

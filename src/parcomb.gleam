@@ -10,12 +10,12 @@ pub type ParseResult(t) =
 pub type Parser(t) =
   fn(Parsable) -> ParseResult(t)
 
+pub type Attribute {
+  Attribute(key: String, value: String)
+}
+
 pub type Element {
-  Element(
-    name: String,
-    attributes: List(tuple(String, String)),
-    children: List(Element),
-  )
+  Element(name: String, attributes: List(Attribute), children: List(Element))
 }
 
 fn tuple_lhs(value: tuple(a, b)) -> a {
@@ -175,4 +175,38 @@ pub fn element_start() -> Parser(
   tuple(Parsable, List(tuple(Parsable, Parsable))),
 ) {
   right(match_literal(Parsable("<")), pair(identifier, attributes()))
+}
+
+pub fn single_element() -> Parser(Element) {
+  map(
+    left(element_start(), match_literal(Parsable("/>"))),
+    fn(result) {
+      let tuple(name, parsed_attributes) = result
+      let attributes = list.map(
+        parsed_attributes,
+        fn(attr: tuple(Parsable, Parsable)) {
+          let tuple(key, value) = attr
+          Attribute(parsable.to_string(key), parsable.to_string(value))
+        },
+      )
+      Element(parsable.to_string(name), attributes, [])
+    },
+  )
+}
+
+pub fn open_element() -> Parser(Element) {
+  map(
+    left(element_start(), match_literal(Parsable(">"))),
+    fn(result) {
+      let tuple(name, parsed_attributes) = result
+      let attributes = list.map(
+        parsed_attributes,
+        fn(attr: tuple(Parsable, Parsable)) {
+          let tuple(key, value) = attr
+          Attribute(parsable.to_string(key), parsable.to_string(value))
+        },
+      )
+      Element(parsable.to_string(name), attributes, [])
+    },
+  )
 }
