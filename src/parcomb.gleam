@@ -170,3 +170,9 @@ pub fn attribute_pair() -> Parser(tuple(Parsable, Parsable)) {
 pub fn attributes() -> Parser(List(tuple(Parsable, Parsable))) {
   zero_or_more(right(space1(), attribute_pair()))
 }
+
+pub fn element_start() -> Parser(
+  tuple(Parsable, List(tuple(Parsable, Parsable))),
+) {
+  right(match_literal(Parsable("<")), pair(identifier, attributes()))
+}

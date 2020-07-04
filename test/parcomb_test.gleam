@@ -279,3 +279,45 @@ pub fn attributes_test() {
     ),
   )
 }
+
+pub fn element_start_test() {
+  let ok_no_attrs_input = Parsable("<elem more")
+  let ok_one_attr_input = Parsable("<elem a=\"b\" more")
+  let ok_many_attrs_input = Parsable("<elem a=\"b\" c=\"d\" e=\"f\" more")
+  let error_input = Parsable("nope")
+
+  let parser = parcomb.element_start()
+
+  parser(ok_no_attrs_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), tuple(Parsable("elem"), []))))
+
+  parser(ok_one_attr_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        tuple(Parsable("elem"), [tuple(Parsable("a"), Parsable("b"))]),
+      ),
+    ),
+  )
+
+  parser(ok_many_attrs_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        tuple(
+          Parsable("elem"),
+          [
+            tuple(Parsable("a"), Parsable("b")),
+            tuple(Parsable("c"), Parsable("d")),
+            tuple(Parsable("e"), Parsable("f")),
+          ],
+        ),
+      ),
+    ),
+  )
+
+  parser(error_input)
+  |> should.equal(Error(Parsable("nope")))
+}
