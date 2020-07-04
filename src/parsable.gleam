@@ -55,5 +55,7 @@ pub fn split_while(
 }
 
 pub fn flatten(parsables: List(Parsable)) -> Parsable {
-  list.fold(parsables, Parsable(""), concat)
+  parsables
+  |> list.reverse()
+  |> list.fold(Parsable(""), concat)
 }

@@ -1,3 +1,4 @@
+import gleam/list
 import gleam/result
 import maybe.{Just, Nothing}
 import parsable.{Parsable}
@@ -96,7 +97,7 @@ fn do_zero_to_many(
 ) -> tuple(Parsable, List(a)) {
   case parser(input) {
     Ok(tuple(rest, match)) -> do_zero_to_many(parser, rest, [match, ..matches])
-    _ -> tuple(input, matches)
+    _ -> tuple(input, list.reverse(matches))
   }
 }
 
@@ -164,4 +165,8 @@ pub fn quoted_string() -> Parser(Parsable) {
 
 pub fn attribute_pair() -> Parser(tuple(Parsable, Parsable)) {
   pair(identifier, right(match_literal(Parsable("=")), quoted_string()))
+}
+
+pub fn attributes() -> Parser(List(tuple(Parsable, Parsable))) {
+  zero_or_more(right(space1(), attribute_pair()))
 }

@@ -249,3 +249,33 @@ pub fn attribute_pair_test() {
   parser(error_input)
   |> should.equal(Error(Parsable("")))
 }
+
+pub fn attributes_test() {
+  let ok_zero_input = Parsable(" more")
+  let ok_one_input = Parsable(" key=\"value\" more")
+  let ok_many_input = Parsable(" a=\"b\" c=\"d\" e=\"f\" more")
+
+  let parser = parcomb.attributes()
+
+  parser(ok_zero_input)
+  |> should.equal(Ok(tuple(Parsable(" more"), [])))
+
+  parser(ok_one_input)
+  |> should.equal(
+    Ok(tuple(Parsable(" more"), [tuple(Parsable("key"), Parsable("value"))])),
+  )
+
+  parser(ok_many_input)
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(" more"),
+        [
+          tuple(Parsable("a"), Parsable("b")),
+          tuple(Parsable("c"), Parsable("d")),
+          tuple(Parsable("e"), Parsable("f")),
+        ],
+      ),
+    ),
+  )
+}
