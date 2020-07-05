@@ -1,5 +1,7 @@
 # parcomb
 
+[![CI Status](https://github.com/MainShayne233/parcomb/workflows/test/badge.svg)](https://github.com/MainShayne233/parcomb/actions?query=workflow%3A%22test%22)
+
 A [gleam](https://github.com/gleam-lang/gleam) implementation of the _Xcruciating Markup Language Parser_ that you build with this guide on parser combinators: [bodil.lol/parser-combinators/](https://bodil.lol/parser-combinators/).
 
 ## Example
