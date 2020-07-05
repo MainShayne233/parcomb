@@ -224,8 +224,11 @@ fn whitespace_wrap(parser: Parser(a)) -> Parser(a) {
   right(space0(), left(parser, space0()))
 }
 
+external fn parent_element_wrap() -> Parser(Element) =
+  "parcomb_bridge" "parent_element_wrap"
+
 pub fn element() -> Parser(Element) {
-  whitespace_wrap(either(single_element(), parent_element()))
+  whitespace_wrap(either(single_element(), parent_element_wrap()))
 }
 
 pub fn close_element(expected_name: Parsable) -> Parser(Parsable) {
