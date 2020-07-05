@@ -502,5 +502,23 @@ pub fn element_test() {
   let parser = parcomb.element()
 
   parser(ok_input)
-  |> should.equal(Ok(tuple(Parsable(""), Element("", [], []))))
+  |> should.equal(
+    Ok(
+      tuple(
+        Parsable(""),
+        Element(
+          "top",
+          [Attribute("label", "Top")],
+          [
+            Element("semi-bottom", [Attribute("label", "Bottom")], []),
+            Element(
+              "middle",
+              [],
+              [Element("bottom", [Attribute("label", "Another bottom")], [])],
+            ),
+          ],
+        ),
+      ),
+    ),
+  )
 }
